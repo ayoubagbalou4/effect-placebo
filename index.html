@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Effect Placeboo</title>
+
+<style>
+body{
+    font-family:Arial;
+    background:#222;
+    color:white;
+    text-align:center;
+    padding:40px;
+}
+::-webkit-scrollbar {
+  width: 0px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+input{
+    width:400px;
+    padding:10px;
+}
+
+button{
+    padding:10px 20px;
+    margin-left:10px;
+}
+
+iframe{
+    margin-top:3000px;
+}
+</style>
+
+</head>
+<body>
+
+
+<input id="url" placeholder="Effect placebo">
+<button onclick="playVideo()">PLACEBO</button>
+
+<br><br>
+
+<iframe
+    id="player"
+    width="560"
+    height="315"
+    src=""
+    allow="autoplay; encrypted-media"
+    allowfullscreen>
+</iframe>
+
+<script>
+function playVideo() {
+    const url = document.getElementById("url").value.trim();
+
+    let videoId = "";
+
+    // Normal YouTube link
+    if (url.includes("youtube.com/watch?v=")) {
+        videoId = new URL(url).searchParams.get("v");
+    }
+
+    // Short youtu.be link
+    else if (url.includes("youtu.be/")) {
+        videoId = url.split("youtu.be/")[1].split("?")[0];
+    }
+
+    if (videoId) {
+        document.getElementById("player").src =
+            "https://www.youtube.com/embed/" + videoId + "?autoplay=1";
+    } else {
+        alert("Invalid YouTube URL");
+    }
+}
+</script>
+
+</body>
+</html>
