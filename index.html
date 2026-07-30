@@ -74,14 +74,19 @@ function playVideo() {
         videoId = new URL(url).searchParams.get("v");
     }
 
-    // Short youtu.be link
+    // Short URL
     else if (url.includes("youtu.be/")) {
         videoId = url.split("youtu.be/")[1].split("?")[0];
     }
 
+    // Live URL
+    else if (url.includes("youtube.com/live/")) {
+        videoId = url.split("/live/")[1].split("?")[0];
+    }
+
     if (videoId) {
         document.getElementById("player").src =
-            "https://www.youtube.com/embed/" + videoId + "?autoplay=1";
+            `https://www.youtube.com/embed/${videoId}?autoplay=1`;
     } else {
         alert("Invalid YouTube URL");
     }
