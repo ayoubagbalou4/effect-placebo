@@ -14,7 +14,7 @@ body{
     margin:0;
     padding:40px;
 }
-
+::-webkit-scrollbar { width: 0px; } /* Track */ ::-webkit-scrollbar-track { background: #f1f1f1; } /* Handle */ ::-webkit-scrollbar-thumb { background: #888; } /* Handle on hover */ ::-webkit-scrollbar-thumb:hover { background: #555; }
 input{
     width:500px;
     max-width:90%;
@@ -30,26 +30,25 @@ button{
 }
 
 #player{
-    margin:4000px auto;
-    width:560px;
+    margin-top:4000px;
+    width:60px;
     max-width:100%;
 }
 </style>
 </head>
 <body>
 
-<h2>YouTube Player</h2>
 
 <input
     id="url"
-    placeholder="Paste YouTube URL here">
+    placeholder="Pastee">
 
 <br><br>
 
-<button onclick="loadVideo()">Load Video</button>
-<button onclick="resumeVideo()">▶ Resume</button>
-<button onclick="pauseVideo()">⏸ Pause</button>
-<button onclick="stopVideo()">⏹ Stop</button>
+<button onclick="loadVideo()">Loa </button>
+<button onclick="resumeVideo()"> Ree</button>
+<button onclick="pauseVideo()"> Pau</button>
+<button onclick="stopVideo()"> St</button>
 
 <div id="player"></div>
 
