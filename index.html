@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>efffffect </title>
+<title> Effe</title>
 
 <style>
 body{
@@ -19,30 +19,28 @@ body{
     width:0;
 }
 
-/* Fixed top bar */
+/* Fixed toolbar */
 #toolbar{
     position:fixed;
     top:0;
     left:0;
     width:100%;
     background:#222;
-    padding:5px;
+    padding:10px;
+    border-bottom:1px solid #444;
     z-index:9999;
     box-sizing:border-box;
-    border-bottom:1px solid #444;
 }
 
 input{
-    width:200px;
-    max-width:60%;
-    padding:6px;
-    font-size:6px;
+    width:320px;
+    max-width:70%;
+    padding:8px;
 }
 
 button{
-    padding:6px 6px;
+    padding:8px 12px;
     margin-left:5px;
-    font-size:6px;
     cursor:pointer;
 }
 
@@ -50,6 +48,7 @@ button{
 #player{
     margin-top:4000px;
     width:560px;
+    height:315px;
     margin-left:auto;
     margin-right:auto;
 }
@@ -57,14 +56,13 @@ button{
 </head>
 <body>
 
-
 <div id="toolbar">
-    <input id="url" placeholder="Pa">
+    <input id="url" placeholder="Paste  ">
 
-    <button onclick="loadVideo()">Lo</button>
-    <button onclick="resumeVideo()">Res</button>
-    <button onclick="pauseVideo()">Pau</button>
-    <button onclick="stopVideo()">St</button>
+    <button onclick="loadVideo()">Load</button>
+    <button onclick="resumeVideo()">Resume</button>
+    <button onclick="pauseVideo()">Pause</button>
+    <button onclick="stopVideo()">Stop</button>
 </div>
 
 <div id="player"></div>
@@ -73,24 +71,47 @@ button{
 
 <script>
 
-let player;
+let player = null;
+let playerReady = false;
 
 // Called automatically by YouTube API
 function onYouTubeIframeAPIReady() {
+
+    player = new YT.Player("player", {
+        height: "315",
+        width: "560",
+        videoId: "",
+
+        playerVars: {
+            autoplay: 1,
+            rel: 0
+        },
+
+        events: {
+            onReady: function () {
+                playerReady = true;
+                console.log("Player ready");
+            }
+        }
+    });
 }
 
-// Extract video ID from almost every YouTube URL
+// Extract video ID
 function getVideoId(url){
 
-    const regex =
-    /(?:youtube\.com\/(?:watch\?v=|live\/|embed\/|shorts\/)|youtu\.be\/)([^?&/]+)/;
-
-    const match = url.match(regex);
+    const match = url.match(
+        /(?:youtube\.com\/(?:watch\?v=|embed\/|live\/|shorts\/)|youtu\.be\/)([^?&/]+)/
+    );
 
     return match ? match[1] : null;
 }
 
 function loadVideo(){
+
+    if(!playerReady){
+        alert("Player is still loading...");
+        return;
+    }
 
     const url = document.getElementById("url").value.trim();
 
@@ -101,33 +122,13 @@ function loadVideo(){
         return;
     }
 
-    if(player){
-
-        player.loadVideoById(videoId);
-
-    }else{
-
-        player = new YT.Player("player",{
-
-            height:"315",
-            width:"560",
-
-            videoId:videoId,
-
-            playerVars:{
-                autoplay:1,
-                rel:0
-            }
-
-        });
-
-    }
+    player.loadVideoById(videoId);
 
 }
 
 function pauseVideo(){
 
-    if(player){
+    if(playerReady){
         player.pauseVideo();
     }
 
@@ -135,7 +136,7 @@ function pauseVideo(){
 
 function resumeVideo(){
 
-    if(player){
+    if(playerReady){
         player.playVideo();
     }
 
@@ -143,7 +144,7 @@ function resumeVideo(){
 
 function stopVideo(){
 
-    if(player){
+    if(playerReady){
         player.stopVideo();
     }
 
