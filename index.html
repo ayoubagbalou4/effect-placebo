@@ -1,154 +1,96 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>efffffect </title>
+<title>Effect Placeboo</title>
 
 <style>
 body{
-    font-family:Arial,sans-serif;
+    font-family:Arial;
     background:#222;
     color:white;
-    margin:0;
     text-align:center;
+    padding:40px;
+}
+::-webkit-scrollbar {
+  width: 0px;
 }
 
-/* Hide scrollbar */
-::-webkit-scrollbar{
-    width:0;
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
 }
 
-/* Fixed top bar */
-#toolbar{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    background:#222;
-    padding:5px;
-    z-index:9999;
-    box-sizing:border-box;
-    border-bottom:1px solid #444;
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
 }
 
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
 input{
-    width:200px;
-    max-width:60%;
-    padding:6px;
-    font-size:6px;
+    width:400px;
+    padding:10px;
 }
 
 button{
-    padding:6px 6px;
-    margin-left:5px;
-    font-size:6px;
-    cursor:pointer;
+    padding:10px 20px;
+    margin-left:10px;
 }
 
-/* Push player down */
-#player{
-    margin-top:4000px;
-    width:560px;
-    margin-left:auto;
-    margin-right:auto;
+iframe{
+    margin-top:3000px;
 }
 </style>
+
 </head>
 <body>
 
 
-<div id="toolbar">
-    <input id="url" placeholder="Pa">
+<input id="url" placeholder="Effect placebo">
+<button onclick="playVideo()">PLACEBOO</button>
 
-    <button onclick="loadVideo()">Lo</button>
-    <button onclick="resumeVideo()">Res</button>
-    <button onclick="pauseVideo()">Pau</button>
-    <button onclick="stopVideo()">St</button>
-</div>
+<br><br>
 
-<div id="player"></div>
-
-<script src="https://www.youtube.com/iframe_api"></script>
+<iframe
+    id="player"
+    width="560"
+    height="315"
+    src=""
+    allow="autoplay; encrypted-media"
+    allowfullscreen>
+</iframe>
 
 <script>
-
-let player;
-
-// Called automatically by YouTube API
-function onYouTubeIframeAPIReady() {
-}
-
-// Extract video ID from almost every YouTube URL
-function getVideoId(url){
-
-    const regex =
-    /(?:youtube\.com\/(?:watch\?v=|live\/|embed\/|shorts\/)|youtu\.be\/)([^?&/]+)/;
-
-    const match = url.match(regex);
-
-    return match ? match[1] : null;
-}
-
-function loadVideo(){
-
+function playVideo() {
     const url = document.getElementById("url").value.trim();
 
-    const videoId = getVideoId(url);
+    let videoId = "";
 
-    if(!videoId){
+    // Normal YouTube link
+    if (url.includes("youtube.com/watch?v=")) {
+        videoId = new URL(url).searchParams.get("v");
+    }
+
+    // Short URL
+    else if (url.includes("youtu.be/")) {
+        videoId = url.split("youtu.be/")[1].split("?")[0];
+    }
+
+    // Live URL
+    else if (url.includes("youtube.com/live/")) {
+        videoId = url.split("/live/")[1].split("?")[0];
+    }
+
+    if (videoId) {
+        document.getElementById("player").src =
+            `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+    } else {
         alert("Invalid YouTube URL");
-        return;
     }
-
-    if(player){
-
-        player.loadVideoById(videoId);
-
-    }else{
-
-        player = new YT.Player("player",{
-
-            height:"315",
-            width:"560",
-
-            videoId:videoId,
-
-            playerVars:{
-                autoplay:1,
-                rel:0
-            }
-
-        });
-
-    }
-
 }
-
-function pauseVideo(){
-
-    if(player){
-        player.pauseVideo();
-    }
-
-}
-
-function resumeVideo(){
-
-    if(player){
-        player.playVideo();
-    }
-
-}
-
-function stopVideo(){
-
-    if(player){
-        player.stopVideo();
-    }
-
-}
-
 </script>
 
 </body>
