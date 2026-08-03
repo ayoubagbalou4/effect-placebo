@@ -12,24 +12,11 @@ body{
     text-align:center;
     padding:40px;
 }
-::-webkit-scrollbar {
-  width: 0px;
+
+::-webkit-scrollbar{
+    width:0;
 }
 
-/* Track */
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #888;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
 input{
     width:400px;
     padding:10px;
@@ -38,18 +25,19 @@ input{
 button{
     padding:10px 20px;
     margin-left:10px;
+    cursor:pointer;
 }
 
 iframe{
     margin-top:3000px;
+    border:0;
 }
 </style>
 
 </head>
 <body>
 
-
-<input id="url" placeholder="Effect placebo">
+<input id="url" placeholder="Paste YouTube URL">
 <button onclick="playVideo()">PLACEBOO</button>
 
 <br><br>
@@ -59,38 +47,62 @@ iframe{
     width="560"
     height="315"
     src=""
-    allow="autoplay; encrypted-media"
+    title="YouTube video player"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
     allowfullscreen>
 </iframe>
 
 <script>
-function playVideo() {
-    const url = document.getElementById("url").value.trim();
 
-    let videoId = "";
+function getVideoId(url){
 
-    // Normal YouTube link
-    if (url.includes("youtube.com/watch?v=")) {
-        videoId = new URL(url).searchParams.get("v");
-    }
+    try{
 
-    // Short URL
-    else if (url.includes("youtu.be/")) {
-        videoId = url.split("youtu.be/")[1].split("?")[0];
-    }
+        const u = new URL(url);
 
-    // Live URL
-    else if (url.includes("youtube.com/live/")) {
-        videoId = url.split("/live/")[1].split("?")[0];
-    }
+        // youtube.com/watch?v=
+        if(u.hostname.includes("youtube.com") && u.pathname==="/watch"){
+            return u.searchParams.get("v");
+        }
 
-    if (videoId) {
-        document.getElementById("player").src =
-            `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-    } else {
-        alert("Invalid YouTube URL");
-    }
+        // youtu.be
+        if(u.hostname==="youtu.be"){
+            return u.pathname.substring(1);
+        }
+
+        // youtube.com/live/
+        if(u.pathname.startsWith("/live/")){
+            return u.pathname.split("/live/")[1];
+        }
+
+        // youtube.com/embed/
+        if(u.pathname.startsWith("/embed/")){
+            return u.pathname.split("/embed/")[1];
+        }
+
+    }catch(e){}
+
+    return null;
 }
+
+function playVideo(){
+
+    const url=document.getElementById("url").value.trim();
+
+    const videoId=getVideoId(url);
+
+    if(!videoId){
+        alert("Invalid YouTube URL");
+        return;
+    }
+
+    const origin=encodeURIComponent(window.location.origin);
+
+    document.getElementById("player").src=
+`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin=${origin}`;
+
+}
+
 </script>
 
 </body>
