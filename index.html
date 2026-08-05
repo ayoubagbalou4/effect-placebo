@@ -11,26 +11,18 @@ body{
     color:white;
     text-align:center;
     padding:40px;
+    color:white;
 }
 
-/* width */
-::-webkit-scrollbar {
-  width: 0px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #888;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
+textarea{
+    width:600px;
+    height:180px;
+    padding:10px;
+    margin:5px;
+    background:#111;
+    color:#fff;
+    border:1px solid #555;
+    resize:vertical;
 }
 
 input{
@@ -40,7 +32,7 @@ input{
 
 button{
     padding:10px 20px;
-    margin-left:10px;
+    margin:5px;
     cursor:pointer;
 }
 
@@ -48,12 +40,30 @@ iframe{
     margin-top:10000px;
     border:0;
 }
+
+/* Hide scrollbar */
+::-webkit-scrollbar{
+    width:0;
+}
 </style>
 
 </head>
 <body>
 
-<input id="url" placeholder="Past">
+<h2>Remove Duplicate Domains</h2>
+
+<textarea id="domains" placeholder="Paste domains here..."></textarea>
+<br>
+
+<button onclick="removeDuplicates()">Remove Duplicate Domains</button>
+
+<br><br>
+
+<textarea id="result" placeholder="Unique domains..." readonly></textarea>
+
+<hr style="margin:40px 0;">
+
+<input id="url" placeholder="Paste YouTube URL">
 <button onclick="playVideo()">PLACEBOO</button>
 
 <br><br>
@@ -70,28 +80,36 @@ iframe{
 
 <script>
 
+function removeDuplicates(){
+
+    const lines = document.getElementById("domains").value
+        .split(/\r?\n/)
+        .map(x => x.trim())
+        .filter(x => x !== "");
+
+    const unique = [...new Set(lines)];
+
+    document.getElementById("result").value = unique.join("\n");
+}
+
 function getVideoId(url){
 
     try{
 
         const u = new URL(url);
 
-        // youtube.com/watch?v=
         if(u.hostname.includes("youtube.com") && u.pathname==="/watch"){
             return u.searchParams.get("v");
         }
 
-        // youtu.be
         if(u.hostname==="youtu.be"){
             return u.pathname.substring(1);
         }
 
-        // youtube.com/live/
         if(u.pathname.startsWith("/live/")){
             return u.pathname.split("/live/")[1];
         }
 
-        // youtube.com/embed/
         if(u.pathname.startsWith("/embed/")){
             return u.pathname.split("/embed/")[1];
         }
@@ -114,7 +132,7 @@ function playVideo(){
 
     const origin=encodeURIComponent(window.location.origin);
 
-    document.getElementById("player").src=
+    document.getElementById("player").src =
 `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin=${origin}`;
 
 }
