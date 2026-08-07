@@ -87,7 +87,7 @@ button {
 }
 
 iframe {
-    margin-top: 40px;
+    margin-top: 2000px;
     border: 0;
     max-width: 100%;
 }
@@ -149,7 +149,7 @@ Remove Duplicate Domains
 
 <input
 id="url"
-placeholder="Paste YouTube URL"
+placeholder="Pa"
 
 >
 
@@ -171,15 +171,6 @@ PLACEBOO
      YOUTUBE VIDEO
 ========================= -->
 
-<iframe
-    id="player"
-    width="560"
-    height="315"
-    src=""
-    title="YouTube video player"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-    allowfullscreen>
-</iframe>
 
 <!-- =========================
      VIDEO CONTROLS
@@ -187,23 +178,23 @@ PLACEBOO
 
 <div class="controls">
 
-```
+
 <button onclick="resumeVideo()">
-    ▶ Play / Resume
+     P / R
 </button>
 
 <button onclick="pauseVideo()">
-    ⏸ Pause
+ P
 </button>
 
 <button onclick="skipBack()">
-    ⏪ -10 Seconds
+     -
 </button>
 
 <button onclick="skipForward()">
-    ⏩ +10 Seconds
+    +
 </button>
-```
+
 
 </div>
 
@@ -213,18 +204,29 @@ PLACEBOO
 
 <div class="jump-box">
 
-```
+
 <input
     id="jumpTime"
-    placeholder="Example: 45:00"
+    placeholder=""
 >
 
 <button onclick="jumpToTime()">
-    ⏱ Go to Time
+    Go 
 </button>
-```
+
 
 </div>
+
+
+<iframe
+    id="player"
+    width="560"
+    height="315"
+    src=""
+    title="YouTube video player"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    allowfullscreen>
+</iframe>
 
 <script>
 
