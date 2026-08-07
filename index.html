@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
+
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Effect Placeboo</title>
 
 <style>
+
 body {
-    font-family: Arial;
+    font-family: Arial, sans-serif;
     background: #222;
     color: white;
     text-align: center;
@@ -16,6 +20,7 @@ body {
 
 textarea {
     width: 600px;
+    max-width: 90%;
     height: 180px;
     padding: 10px;
     margin: 5px;
@@ -23,14 +28,17 @@ textarea {
     color: #fff;
     border: 1px solid #555;
     resize: vertical;
+    box-sizing: border-box;
 }
 
 input {
     width: 400px;
+    max-width: 80%;
     padding: 10px;
     background-color: transparent;
     color: white;
     border: 1px solid #555;
+    box-sizing: border-box;
 }
 
 button {
@@ -38,6 +46,7 @@ button {
     margin: 5px;
     cursor: pointer;
     border: 0;
+    border-radius: 3px;
 }
 
 .btn {
@@ -51,37 +60,44 @@ button {
     border: 1px solid #555;
 }
 
+.btnn:hover {
+    background-color: #333;
+}
+
 .controls {
     margin-top: 15px;
 }
 
 .controls button {
-    background: #333;
+    background-color: #333;
     color: white;
     border: 1px solid #666;
 }
 
 .controls button:hover {
-    background: #555;
+    background-color: #555;
 }
 
-.time-box {
+.jump-box {
     margin-top: 15px;
 }
 
-.time-box input {
+.jump-box input {
     width: 150px;
 }
 
 iframe {
-    margin-top: 50px;
+    margin-top: 40px;
     border: 0;
+    max-width: 100%;
 }
 
 /* Hide scrollbar */
 ::-webkit-scrollbar {
     width: 0;
+    height: 0;
 }
+
 </style>
 
 </head>
@@ -90,51 +106,112 @@ iframe {
 
 <h2>Remove Duplicate Domains</h2>
 
-<textarea id="domains" placeholder="Paste domains here..."></textarea>
+<!-- =========================
+     DOMAIN INPUT
+========================= -->
+
+<textarea
+    id="domains"
+    placeholder="Paste domains here..."
+></textarea>
 
 <br>
 
-<button class="btn" onclick="removeDuplicates()">
-    Remove Duplicate Domains
+<button
+class="btn"
+onclick="removeDuplicates()"
+
+>
+
+```
+Remove Duplicate Domains
+```
+
 </button>
 
 <br><br>
 
-<textarea id="result" placeholder="Unique domains..." readonly></textarea>
+<!-- =========================
+     DOMAIN RESULT
+========================= -->
 
-<hr style="margin:5px 0;">
+<textarea
+    id="result"
+    placeholder="Unique domains..."
+    readonly
+></textarea>
 
-<input id="url" placeholder="Paste YouTube URL">
+<hr style="margin: 20px 0;">
 
-<button class="btnn" onclick="playVideo()">
-    PLACEBOO
+<!-- =========================
+     YOUTUBE URL
+========================= -->
+
+<input
+id="url"
+placeholder="Paste YouTube URL"
+
+>
+
+<button
+class="btnn"
+onclick="playVideo()"
+
+>
+
+```
+PLACEBOO
+```
+
 </button>
 
 <br><br>
 
-<!-- YouTube Player -->
+<!-- =========================
+     YOUTUBE VIDEO
+========================= -->
 
-<div id="player"></div>
+<iframe
+    id="player"
+    width="560"
+    height="315"
+    src=""
+    title="YouTube video player"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    allowfullscreen>
+</iframe>
 
-<!-- Video Controls -->
+<!-- =========================
+     VIDEO CONTROLS
+========================= -->
 
 <div class="controls">
 
 ```
-<button onclick="resumeVideo()">▶ Play / Resume</button>
+<button onclick="resumeVideo()">
+    ▶ Play / Resume
+</button>
 
-<button onclick="pauseVideo()">⏸ Pause</button>
+<button onclick="pauseVideo()">
+    ⏸ Pause
+</button>
 
-<button onclick="skipBack()">⏪ -10s</button>
+<button onclick="skipBack()">
+    ⏪ -10 Seconds
+</button>
 
-<button onclick="skipForward()">⏩ +10s</button>
+<button onclick="skipForward()">
+    ⏩ +10 Seconds
+</button>
 ```
 
 </div>
 
-<!-- Jump to Time -->
+<!-- =========================
+     JUMP TO TIME
+========================= -->
 
-<div class="time-box">
+<div class="jump-box">
 
 ```
 <input
@@ -143,7 +220,7 @@ iframe {
 >
 
 <button onclick="jumpToTime()">
-    ⏱️ Go to Time
+    ⏱ Go to Time
 </button>
 ```
 
@@ -151,72 +228,34 @@ iframe {
 
 <script>
 
-/* =========================
-   REMOVE DUPLICATES
-========================= */
+
+/* =====================================================
+   REMOVE DUPLICATE DOMAINS
+===================================================== */
 
 function removeDuplicates() {
 
-    const lines = document.getElementById("domains").value
-        .split(/\r?\n/)
-        .map(x => x.trim())
-        .filter(x => x !== "");
+    const lines =
+        document
+            .getElementById("domains")
+            .value
+            .split(/\r?\n/)
+            .map(x => x.trim())
+            .filter(x => x !== "");
 
-    const unique = [...new Set(lines)];
+    const unique =
+        [...new Set(lines)];
 
-    document.getElementById("result").value =
+    document
+        .getElementById("result")
+        .value =
         unique.join("\n");
 }
 
 
-/* =========================
-   YOUTUBE PLAYER
-========================= */
-
-let player;
-
-
-/* Load YouTube IFrame API */
-
-let tag = document.createElement("script");
-
-tag.src = "https://www.youtube.com/iframe_api";
-
-let firstScriptTag =
-    document.getElementsByTagName("script")[0];
-
-firstScriptTag.parentNode.insertBefore(
-    tag,
-    firstScriptTag
-);
-
-
-/* YouTube API calls this function automatically */
-
-function onYouTubeIframeAPIReady() {
-
-    player = new YT.Player("player", {
-        width: "560",
-        height: "315",
-        videoId: "",
-        playerVars: {
-            autoplay: 0,
-            rel: 0,
-            modestbranding: 1,
-            playsinline: 1
-        },
-        events: {
-            onReady: function() {
-                console.log("YouTube player ready");
-            }
-        }
-    });
-}
-
-
-/* =========================
-   GET VIDEO ID
-========================= */
+/* =====================================================
+   GET YOUTUBE VIDEO ID
+===================================================== */
 
 function getVideoId(url) {
 
@@ -227,60 +266,93 @@ function getVideoId(url) {
         /*
          * youtube.com/watch?v=VIDEO_ID
          */
+
         if (
-            (u.hostname === "youtube.com" ||
-             u.hostname === "www.youtube.com") &&
+            (
+                u.hostname === "youtube.com" ||
+                u.hostname === "www.youtube.com"
+            ) &&
             u.pathname === "/watch"
         ) {
+
             return u.searchParams.get("v");
         }
+
 
         /*
          * youtu.be/VIDEO_ID
          */
+
         if (
             u.hostname === "youtu.be" ||
             u.hostname === "www.youtu.be"
         ) {
-            return u.pathname.substring(1).split("/")[0];
+
+            return u.pathname
+                .substring(1)
+                .split("/")[0];
         }
+
 
         /*
          * youtube.com/live/VIDEO_ID
          */
-        if (u.pathname.startsWith("/live/")) {
 
-            return u.pathname
-                .split("/live/")[1]
-                .split("/")[0];
+        if (
+            u.hostname === "youtube.com" ||
+            u.hostname === "www.youtube.com"
+        ) {
+
+            if (
+                u.pathname.startsWith("/live/")
+            ) {
+
+                return u.pathname
+                    .split("/live/")[1]
+                    .split("/")[0];
+            }
         }
+
 
         /*
          * youtube.com/embed/VIDEO_ID
          */
-        if (u.pathname.startsWith("/embed/")) {
+
+        if (
+            u.pathname.startsWith("/embed/")
+        ) {
 
             return u.pathname
                 .split("/embed/")[1]
                 .split("/")[0];
         }
 
-    } catch (e) {}
+    }
+    catch (e) {
+
+        console.log("Invalid URL");
+
+    }
 
     return null;
 }
 
 
-/* =========================
-   LOAD VIDEO
-========================= */
+/* =====================================================
+   PLAY / LOAD VIDEO
+===================================================== */
 
 function playVideo() {
 
     const url =
-        document.getElementById("url").value.trim();
+        document
+            .getElementById("url")
+            .value
+            .trim();
 
-    const videoId = getVideoId(url);
+    const videoId =
+        getVideoId(url);
+
 
     if (!videoId) {
 
@@ -289,120 +361,356 @@ function playVideo() {
         return;
     }
 
-    if (!player) {
 
-        alert("YouTube player is still loading. Please try again.");
+    const origin =
+        encodeURIComponent(
+            window.location.origin
+        );
+
+
+    /*
+     * YOUR ORIGINAL METHOD
+     */
+
+    document.getElementById("player").src =
+        `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin=${origin}`;
+
+
+    /*
+     * Wait for iframe to load,
+     * then start listening for
+     * currentTime information.
+     */
+
+    setTimeout(() => {
+
+        startListening();
+
+    }, 1000);
+}
+
+
+/* =====================================================
+   SEND COMMAND TO YOUTUBE
+===================================================== */
+
+function youtubeCommand(
+    command,
+    args = []
+) {
+
+    const iframe =
+        document.getElementById("player");
+
+
+    if (
+        !iframe ||
+        !iframe.contentWindow
+    ) {
 
         return;
     }
 
-    player.loadVideoById(videoId);
 
+    iframe.contentWindow.postMessage(
+
+        JSON.stringify({
+
+            event: "command",
+
+            func: command,
+
+            args: args
+
+        }),
+
+        "https://www.youtube-nocookie.com"
+
+    );
 }
 
 
-/* =========================
+/* =====================================================
    PLAY / RESUME
-========================= */
+===================================================== */
 
 function resumeVideo() {
 
-    if (!player) return;
-
-    player.playVideo();
+    youtubeCommand(
+        "playVideo"
+    );
 }
 
 
-/* =========================
+/* =====================================================
    PAUSE
-========================= */
+===================================================== */
 
 function pauseVideo() {
 
-    if (!player) return;
-
-    player.pauseVideo();
+    youtubeCommand(
+        "pauseVideo"
+    );
 }
 
 
-/* =========================
+/* =====================================================
+   CURRENT VIDEO TIME
+===================================================== */
+
+let currentVideoTime = 0;
+
+
+/* =====================================================
+   LISTEN FOR YOUTUBE INFORMATION
+===================================================== */
+
+window.addEventListener(
+    "message",
+    function(event) {
+
+        /*
+         * Only accept messages
+         * from YouTube.
+         */
+
+        if (
+            event.origin !==
+            "https://www.youtube-nocookie.com"
+        ) {
+
+            return;
+        }
+
+
+        try {
+
+            const data =
+                typeof event.data === "string"
+                    ? JSON.parse(event.data)
+                    : event.data;
+
+
+            /*
+             * YouTube sends player
+             * information using
+             * infoDelivery.
+             */
+
+            if (
+                data &&
+                data.event === "infoDelivery" &&
+                data.info
+            ) {
+
+                if (
+                    typeof data.info.currentTime ===
+                    "number"
+                ) {
+
+                    currentVideoTime =
+                        data.info.currentTime;
+                }
+            }
+
+        }
+        catch (e) {
+
+            /*
+             * Ignore non-JSON messages.
+             */
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   START YOUTUBE LISTENER
+===================================================== */
+
+function startListening() {
+
+    const iframe =
+        document.getElementById("player");
+
+
+    if (
+        !iframe ||
+        !iframe.contentWindow
+    ) {
+
+        return;
+    }
+
+
+    iframe.contentWindow.postMessage(
+
+        JSON.stringify({
+
+            event: "listening",
+
+            id: 1,
+
+            channel: "html5"
+
+        }),
+
+        "https://www.youtube-nocookie.com"
+
+    );
+}
+
+
+/* =====================================================
+   KEEP REQUESTING CURRENT TIME
+===================================================== */
+
+setInterval(
+
+    function() {
+
+        const iframe =
+            document.getElementById("player");
+
+
+        if (
+            !iframe ||
+            !iframe.contentWindow
+        ) {
+
+            return;
+        }
+
+
+        iframe.contentWindow.postMessage(
+
+            JSON.stringify({
+
+                event: "listening",
+
+                id: 1,
+
+                channel: "html5"
+
+            }),
+
+            "https://www.youtube-nocookie.com"
+
+        );
+
+    },
+
+    250
+
+);
+
+
+/* =====================================================
    SKIP BACK 10 SECONDS
-========================= */
+===================================================== */
 
 function skipBack() {
 
-    if (!player) return;
+    const newTime =
+        Math.max(
+            0,
+            currentVideoTime - 10
+        );
 
-    const currentTime =
-        player.getCurrentTime();
 
-    player.seekTo(
-        Math.max(0, currentTime - 10),
-        true
+    youtubeCommand(
+
+        "seekTo",
+
+        [
+            newTime,
+            true
+        ]
+
     );
 }
 
 
-/* =========================
+/* =====================================================
    SKIP FORWARD 10 SECONDS
-========================= */
+===================================================== */
 
 function skipForward() {
 
-    if (!player) return;
+    const newTime =
+        currentVideoTime + 10;
 
-    const currentTime =
-        player.getCurrentTime();
 
-    const duration =
-        player.getDuration();
+    youtubeCommand(
 
-    player.seekTo(
-        Math.min(duration, currentTime + 10),
-        true
+        "seekTo",
+
+        [
+            newTime,
+            true
+        ]
+
     );
 }
 
 
-/* =========================
-   CONVERT TIME
-=========================
-
-   Supports:
-
-   45
-   45:00
-   1:30
-   1:23:45
-*/
+/* =====================================================
+   CONVERT TIME TO SECONDS
+===================================================== */
 
 function timeToSeconds(time) {
 
-    time = time.trim();
+    time =
+        time.trim();
+
 
     if (!time) {
+
         return null;
     }
 
-    const parts = time.split(":");
+
+    const parts =
+        time.split(":");
+
 
     /*
-     * 45
+     * Example:
+     *
+     * 90
      */
-    if (parts.length === 1) {
+
+    if (
+        parts.length === 1
+    ) {
 
         const seconds =
             Number(parts[0]);
 
-        return Number.isFinite(seconds)
-            ? seconds
-            : null;
+
+        if (
+            !Number.isFinite(seconds)
+        ) {
+
+            return null;
+        }
+
+
+        return seconds;
     }
 
+
     /*
+     * Example:
+     *
      * 45:00
      */
-    if (parts.length === 2) {
+
+    if (
+        parts.length === 2
+    ) {
 
         const minutes =
             Number(parts[0]);
@@ -410,20 +718,32 @@ function timeToSeconds(time) {
         const seconds =
             Number(parts[1]);
 
+
         if (
             !Number.isFinite(minutes) ||
             !Number.isFinite(seconds)
         ) {
+
             return null;
         }
 
-        return minutes * 60 + seconds;
+
+        return (
+            minutes * 60 +
+            seconds
+        );
     }
 
+
     /*
+     * Example:
+     *
      * 1:23:45
      */
-    if (parts.length === 3) {
+
+    if (
+        parts.length === 3
+    ) {
 
         const hours =
             Number(parts[0]);
@@ -434,13 +754,16 @@ function timeToSeconds(time) {
         const seconds =
             Number(parts[2]);
 
+
         if (
             !Number.isFinite(hours) ||
             !Number.isFinite(minutes) ||
             !Number.isFinite(seconds)
         ) {
+
             return null;
         }
+
 
         return (
             hours * 3600 +
@@ -449,56 +772,115 @@ function timeToSeconds(time) {
         );
     }
 
+
     return null;
 }
 
 
-/* =========================
-   JUMP TO TIME
-========================= */
+/* =====================================================
+   JUMP TO SPECIFIC TIME
+===================================================== */
 
 function jumpToTime() {
 
-    if (!player) return;
-
     const input =
-        document.getElementById("jumpTime").value;
+        document
+            .getElementById("jumpTime")
+            .value;
+
 
     const seconds =
         timeToSeconds(input);
 
-    if (seconds === null || seconds < 0) {
+
+    if (
+        seconds === null ||
+        seconds < 0
+    ) {
 
         alert(
             "Invalid time.\n\n" +
             "Examples:\n" +
             "45:00\n" +
             "1:30\n" +
-            "1:23:45"
+            "1:23:45\n" +
+            "90"
         );
 
         return;
     }
 
-    const duration =
-        player.getDuration();
 
-    if (
-        duration &&
-        seconds > duration
-    ) {
+    /*
+     * Seek to requested time.
+     */
 
-        alert(
-            "That time is longer than the video."
-        );
+    youtubeCommand(
 
-        return;
-    }
+        "seekTo",
 
-    player.seekTo(seconds, true);
+        [
+            seconds,
+            true
+        ]
 
-    player.playVideo();
+    );
+
+
+    /*
+     * Start playing after
+     * jumping to the time.
+     */
+
+    youtubeCommand(
+        "playVideo"
+    );
 }
+
+
+/* =====================================================
+   ENTER KEY FOR JUMP TIME
+===================================================== */
+
+document
+    .getElementById("jumpTime")
+    .addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                jumpToTime();
+
+            }
+
+        }
+    );
+
+
+/* =====================================================
+   ENTER KEY FOR YOUTUBE URL
+===================================================== */
+
+document
+    .getElementById("url")
+    .addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                playVideo();
+
+            }
+
+        }
+    );
+
 
 </script>
 
