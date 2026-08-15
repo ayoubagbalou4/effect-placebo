@@ -87,6 +87,14 @@ iframe {
     height: 0;
 }
 
+    .video-time {
+    margin-top: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    color: black;
+    font-family: monospace;
+}
+
 </style>
 
 </head>
@@ -145,7 +153,9 @@ onclick="playVideo()"
 
 <br><br>
 
-
+<div id="videoTime" class="video-time">
+    00:00 - 00:00
+</div>
 
 <div class="controls">
 
@@ -430,6 +440,7 @@ function pauseVideo() {
 ===================================================== */
 
 let currentVideoTime = 0;
+let videoDuration = 0;
 
 
 /* =====================================================
@@ -469,20 +480,37 @@ window.addEventListener(
              */
 
             if (
-                data &&
-                data.event === "infoDelivery" &&
-                data.info
-            ) {
+    data &&
+    data.event === "infoDelivery" &&
+    data.info
+) {
 
-                if (
-                    typeof data.info.currentTime ===
-                    "number"
-                ) {
+    // Current position
+    if (
+        typeof data.info.currentTime === "number"
+    ) {
 
-                    currentVideoTime =
-                        data.info.currentTime;
-                }
-            }
+        currentVideoTime =
+            data.info.currentTime;
+    }
+
+
+    // Total video duration
+    if (
+        typeof data.info.duration === "number"
+    ) {
+
+        videoDuration =
+            data.info.duration;
+    }
+
+
+    // Display current time - total duration
+    document.getElementById("videoTime").textContent =
+        formatTime(currentVideoTime) +
+        " - " +
+        formatTime(videoDuration);
+}
 
         }
         catch (e) {
@@ -805,6 +833,38 @@ function jumpToTime() {
 
     youtubeCommand(
         "playVideo"
+    );
+}
+
+
+    function formatTime(seconds) {
+
+    if (!Number.isFinite(seconds) || seconds < 0) {
+        return "00:00";
+    }
+
+    seconds = Math.floor(seconds);
+
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+
+    if (hours > 0) {
+
+        return (
+            String(hours).padStart(2, "0") +
+            ":" +
+            String(minutes).padStart(2, "0") +
+            ":" +
+            String(secs).padStart(2, "0")
+        );
+
+    }
+
+    return (
+        String(minutes).padStart(2, "0") +
+        ":" +
+        String(secs).padStart(2, "0")
     );
 }
 
