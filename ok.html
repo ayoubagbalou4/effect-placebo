@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Number CAPTCHA</title>
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #111;
+  }
+
+  .captcha-wrap {
+    width: 336px;
+    margin: 20px auto;
+    text-align: center;
+  }
+
+  .captcha-box {
+    border: 1px solid #e5e5e5;
+    border-radius: 5px;
+    padding: 20px 7px 10px;
+    box-shadow: 0 0 2px rgba(0,0,0,.04);
+  }
+
+  .instruction {
+    margin: 0 0 24px;
+    font-size: 15px;
+    color: #17365d;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .tile {
+    width: 100px;
+    height: 100px;
+    padding: 0;
+    border: 3px solid #c6c6c6;
+    border-radius: 6px;
+    background: #eee;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .tile img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .tile.selected {
+    border: 4px solid #1877f2;
+    box-shadow: 0 0 0 2px rgba(24,119,242,.22);
+  }
+
+  .tile.selected::after {
+    content: "✓";
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    border-radius: 50%;
+    background: #1877f2;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  .links {
+    display: flex;
+    justify-content: space-between;
+    padding: 21px 31px 18px;
+    font-size: 15px;
+  }
+
+  .links a {
+    color: #06f;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .submit {
+    width: 330px;
+    height: 38px;
+    border: 0;
+    border-radius: 4px;
+    background: #20a943;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .submit:hover {
+    background: #198f38;
+  }
+
+  .result {
+    min-height: 24px;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+
+  .result.ok { color: #168a35; }
+  .result.bad { color: #c62828; }
+</style>
+</head>
+
+<body>
+<div class="captcha-wrap">
+
+  <div class="captcha-box">
+    <p class="instruction">Please select all boxes with number 353</p>
+
+    <div id="grid" class="grid"></div>
+  </div>
+
+  <div class="links">
+    <a id="clearBtn">Clear Selection</a>
+    <a href="#">Goto Login Page</a>
+  </div>
+
+  <button class="submit" id="submitBtn">Submit</button>
+  <div id="result" class="result"></div>
+</div>
+
+<script>
+/*
+  The numbers below are rendered into PNG images with Canvas.
+  The visible number is NOT HTML text and there is NO data-number attribute.
+*/
+
+const tiles = [
+  { id: "img-a", value: "422", color: "#b84ee8", bg: "#c8eee9", rotate: -3, underline: false },
+  { id: "img-b", value: "156", color: "#486a98", bg: "#f0eff7", rotate: 2, underline: false },
+  { id: "img-c", value: "353", color: "#c36fbd", bg: "#eeeecc", rotate: 1, underline: true  },
+
+  { id: "img-d", value: "353", color: "#3e70b1", bg: "#cce6bd", rotate: -2, underline: true  },
+  { id: "img-e", value: "608", color: "#a4cc39", bg: "#a8e2d1", rotate: -2, underline: false },
+  { id: "img-f", value: "353", color: "#3c7e55", bg: "#e1e2c9", rotate: 2, underline: false },
+
+  { id: "img-g", value: "922", color: "#14567d", bg: "#eeeeef", rotate: -1, underline: true  },
+  { id: "img-h", value: "353", color: "#d86586", bg: "#bfe2e7", rotate: 2, underline: false },
+  { id: "img-i", value: "497", color: "#507276", bg: "#edf2f4", rotate: -2, underline: true  }
+];
+
+const grid = document.getElementById("grid");
+const result = document.getElementById("result");
+
+/* Draw each number onto a canvas, then turn the canvas into an image. */
+function makeNumberImage(tile) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 200;
+  canvas.height = 200;
+
+  const ctx = canvas.getContext("2d");
+
+  // Background
+  ctx.fillStyle = tile.bg;
+  ctx.fillRect(0, 0, 200, 200);
+
+  // Fine texture
+  for (let i = 0; i < 1800; i++) {
+    const x = Math.random() * 200;
+    const y = Math.random() * 200;
+    const alpha = Math.random() * 0.12;
+
+    ctx.fillStyle = `rgba(80,80,80,${alpha})`;
+    ctx.fillRect(x, y, 1, 1);
+  }
+
+  // Light diagonal interference lines
+  ctx.lineWidth = 1;
+  for (let x = -200; x < 400; x += 12) {
+    ctx.strokeStyle = "rgba(255,255,255,.12)";
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x + 200, 200);
+    ctx.stroke();
+  }
+
+  // Number
+  ctx.save();
+  ctx.translate(100, 108);
+  ctx.rotate(tile.rotate * Math.PI / 180);
+
+  ctx.font = "bold 72px Georgia, 'Times New Roman', serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillStyle = tile.color;
+
+  // Slight shadow/offset to imitate the reference
+  ctx.globalAlpha = 0.13;
+  ctx.fillText(tile.value, 2, 3);
+  ctx.globalAlpha = 1;
+  ctx.fillText(tile.value, 0, 0);
+
+  if (tile.underline) {
+    ctx.strokeStyle = tile.color;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(-50, 45);
+    ctx.lineTo(50, 45);
+    ctx.stroke();
+  }
+
+  ctx.restore();
+
+  return canvas.toDataURL("image/png");
+}
+
+/* Build the grid using only <img> elements for the visible numbers. */
+tiles.forEach((tile, index) => {
+  const button = document.createElement("button");
+  button.className = "tile";
+  button.type = "button";
+  button.dataset.id = tile.id; // ID only — never the number.
+
+  const img = document.createElement("img");
+  img.alt = "Number image";
+  img.src = makeNumberImage(tile);
+
+  button.appendChild(img);
+  grid.appendChild(button);
+
+  button.addEventListener("click", () => {
+    button.classList.toggle("selected");
+    result.textContent = "";
+    result.className = "result";
+  });
+});
+
+document.getElementById("clearBtn").addEventListener("click", () => {
+  document.querySelectorAll(".tile.selected").forEach(el => {
+    el.classList.remove("selected");
+  });
+  result.textContent = "";
+  result.className = "result";
+});
+
+document.getElementById("submitBtn").addEventListener("click", () => {
+  const selected = [...document.querySelectorAll(".tile.selected")]
+    .map(el => el.dataset.id);
+
+  // Correct image IDs. The numbers themselves are not stored in HTML.
+  const correct = ["img-c", "img-d", "img-f", "img-h"];
+
+  const ok =
+    selected.length === correct.length &&
+    correct.every(id => selected.includes(id));
+
+  if (ok) {
+    result.textContent = "✓ Correct!";
+    result.className = "result ok";
+  } else {
+    result.textContent = "✕ Please try again.";
+    result.className = "result bad";
+  }
+});
+</script>
+</body>
+</html>
