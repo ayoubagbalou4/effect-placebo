@@ -122,7 +122,10 @@
 <div class="captcha-wrap">
 
   <div class="captcha-box">
-    <p class="instruction">Please select all boxes with number 353</p>
+    <p class="instruction">
+    Please select all boxes with number
+    <strong id="targetText"></strong>
+</p>
 
     <div id="grid" class="grid"></div>
   </div>
@@ -137,138 +140,221 @@
 </div>
 
 <script>
-/*
-  The numbers below are rendered into PNG images with Canvas.
-  The visible number is NOT HTML text and there is NO data-number attribute.
-*/
+const TILE_COUNT = 9;
+const CORRECT_COUNT = 4;
 
-const tiles = [
-  { id: "img-a", value: "422", color: "#b84ee8", bg: "#c8eee9", rotate: -3, underline: false },
-  { id: "img-b", value: "156", color: "#486a98", bg: "#f0eff7", rotate: 2, underline: false },
-  { id: "img-c", value: "353", color: "#c36fbd", bg: "#eeeecc", rotate: 1, underline: true  },
+let targetNumber;
+let tiles = [];
 
-  { id: "img-d", value: "353", color: "#3e70b1", bg: "#cce6bd", rotate: -2, underline: true  },
-  { id: "img-e", value: "608", color: "#a4cc39", bg: "#a8e2d1", rotate: -2, underline: false },
-  { id: "img-f", value: "353", color: "#3c7e55", bg: "#e1e2c9", rotate: 2, underline: false },
-
-  { id: "img-g", value: "922", color: "#14567d", bg: "#eeeeef", rotate: -1, underline: true  },
-  { id: "img-h", value: "353", color: "#d86586", bg: "#bfe2e7", rotate: 2, underline: false },
-  { id: "img-i", value: "497", color: "#507276", bg: "#edf2f4", rotate: -2, underline: true  }
-];
-
-const grid = document.getElementById("grid");
-const result = document.getElementById("result");
-
-/* Draw each number onto a canvas, then turn the canvas into an image. */
-function makeNumberImage(tile) {
-  const canvas = document.createElement("canvas");
-  canvas.width = 200;
-  canvas.height = 200;
-
-  const ctx = canvas.getContext("2d");
-
-  // Background
-  ctx.fillStyle = tile.bg;
-  ctx.fillRect(0, 0, 200, 200);
-
-  // Fine texture
-  for (let i = 0; i < 1800; i++) {
-    const x = Math.random() * 200;
-    const y = Math.random() * 200;
-    const alpha = Math.random() * 0.12;
-
-    ctx.fillStyle = `rgba(80,80,80,${alpha})`;
-    ctx.fillRect(x, y, 1, 1);
-  }
-
-  // Light diagonal interference lines
-  ctx.lineWidth = 1;
-  for (let x = -200; x < 400; x += 12) {
-    ctx.strokeStyle = "rgba(255,255,255,.12)";
-    ctx.beginPath();
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x + 200, 200);
-    ctx.stroke();
-  }
-
-  // Number
-  ctx.save();
-  ctx.translate(100, 108);
-  ctx.rotate(tile.rotate * Math.PI / 180);
-
-  ctx.font = "bold 72px Georgia, 'Times New Roman', serif";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillStyle = tile.color;
-
-  // Slight shadow/offset to imitate the reference
-  ctx.globalAlpha = 0.13;
-  ctx.fillText(tile.value, 2, 3);
-  ctx.globalAlpha = 1;
-  ctx.fillText(tile.value, 0, 0);
-
-  if (tile.underline) {
-    ctx.strokeStyle = tile.color;
-    ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.moveTo(-50, 45);
-    ctx.lineTo(50, 45);
-    ctx.stroke();
-  }
-
-  ctx.restore();
-
-  return canvas.toDataURL("image/png");
+// Random 3-digit number
+function randomNumber() {
+    return Math.floor(100 + Math.random() * 900);
 }
 
-/* Build the grid using only <img> elements for the visible numbers. */
-tiles.forEach((tile, index) => {
-  const button = document.createElement("button");
-  button.className = "tile";
-  button.type = "button";
-  button.dataset.id = tile.id; // ID only — never the number.
+// Shuffle array
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
 
-  const img = document.createElement("img");
-  img.alt = "Number image";
-  img.src = makeNumberImage(tile);
+// Create number as an IMAGE using Canvas
+function createNumberImage(number) {
+    const canvas = document.createElement("canvas");
 
-  button.appendChild(img);
-  grid.appendChild(button);
+    canvas.width = 200;
+    canvas.height = 200;
 
-  button.addEventListener("click", () => {
-    button.classList.toggle("selected");
-    result.textContent = "";
-    result.className = "result";
-  });
-});
+    const ctx = canvas.getContext("2d");
 
-document.getElementById("clearBtn").addEventListener("click", () => {
-  document.querySelectorAll(".tile.selected").forEach(el => {
-    el.classList.remove("selected");
-  });
-  result.textContent = "";
-  result.className = "result";
-});
+    // Random background
+    const backgrounds = [
+        "#c8eee9",
+        "#f0eff7",
+        "#eeeecc",
+        "#cce6bd",
+        "#a8e2d1",
+        "#e1e2c9",
+        "#eeeeef",
+        "#bfe2e7",
+        "#edf2f4"
+    ];
 
+    const colors = [
+        "#b84ee8",
+        "#486a98",
+        "#c36fbd",
+        "#3e70b1",
+        "#a4cc39",
+        "#3c7e55",
+        "#14567d",
+        "#d86586",
+        "#507276"
+    ];
+
+    ctx.fillStyle =
+        backgrounds[Math.floor(Math.random() * backgrounds.length)];
+
+    ctx.fillRect(0, 0, 200, 200);
+
+    // Image noise
+    for (let i = 0; i < 1500; i++) {
+        ctx.fillStyle = `rgba(80,80,80,${Math.random() * 0.12})`;
+
+        ctx.fillRect(
+            Math.random() * 200,
+            Math.random() * 200,
+            1,
+            1
+        );
+    }
+
+    // Random rotation
+    ctx.save();
+
+    ctx.translate(100, 105);
+
+    const rotation =
+        (Math.random() * 6 - 3) * Math.PI / 180;
+
+    ctx.rotate(rotation);
+
+    ctx.font = "bold 72px Georgia, serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    ctx.fillStyle =
+        colors[Math.floor(Math.random() * colors.length)];
+
+    // Number is rendered directly into the image
+    ctx.fillText(String(number), 0, 0);
+
+    ctx.restore();
+
+    return canvas.toDataURL("image/png");
+}
+
+
+// Generate a completely new CAPTCHA
+function generateCaptcha() {
+
+    // New random target
+    targetNumber = randomNumber();
+
+    document.getElementById("targetText").textContent =
+        targetNumber;
+
+    tiles = [];
+
+    // 4 correct images
+    for (let i = 0; i < CORRECT_COUNT; i++) {
+        tiles.push({
+            id: crypto.randomUUID(),
+            number: targetNumber,
+            correct: true
+        });
+    }
+
+    // 5 random incorrect images
+    while (tiles.length < TILE_COUNT) {
+
+        const number = randomNumber();
+
+        if (number !== targetNumber) {
+            tiles.push({
+                id: crypto.randomUUID(),
+                number: number,
+                correct: false
+            });
+        }
+    }
+
+    shuffle(tiles);
+
+    renderCaptcha();
+}
+
+
+// Render images
+function renderCaptcha() {
+
+    const grid = document.getElementById("grid");
+
+    grid.innerHTML = "";
+
+    tiles.forEach(tile => {
+
+        const button = document.createElement("button");
+
+        button.type = "button";
+        button.className = "tile";
+
+        // Only an ID is stored.
+        // There is NO data-number attribute.
+        button.dataset.id = tile.id;
+
+        const image = document.createElement("img");
+
+        image.src = createNumberImage(tile.number);
+        image.alt = "Number image";
+
+        button.appendChild(image);
+
+        grid.appendChild(button);
+
+        button.addEventListener("click", () => {
+            button.classList.toggle("selected");
+        });
+    });
+}
+
+
+// Submit
 document.getElementById("submitBtn").addEventListener("click", () => {
-  const selected = [...document.querySelectorAll(".tile.selected")]
-    .map(el => el.dataset.id);
 
-  // Correct image IDs. The numbers themselves are not stored in HTML.
-  const correct = ["img-c", "img-d", "img-f", "img-h"];
+    const selectedIds = new Set(
+        [...document.querySelectorAll(".tile.selected")]
+            .map(tile => tile.dataset.id)
+    );
 
-  const ok =
-    selected.length === correct.length &&
-    correct.every(id => selected.includes(id));
+    const correctIds = new Set(
+        tiles
+            .filter(tile => tile.correct)
+            .map(tile => tile.id)
+    );
 
-  if (ok) {
-    result.textContent = "✓ Correct!";
-    result.className = "result ok";
-  } else {
-    result.textContent = "✕ Please try again.";
-    result.className = "result bad";
-  }
+    const correct =
+        selectedIds.size === correctIds.size &&
+        [...correctIds].every(id =>
+            selectedIds.has(id)
+        );
+
+    const result = document.getElementById("result");
+
+    if (correct) {
+        result.textContent = "✓ Correct!";
+        result.className = "result ok";
+    } else {
+        result.textContent = "✕ Please try again.";
+        result.className = "result bad";
+    }
 });
+
+
+// Clear
+document.getElementById("clearBtn").addEventListener("click", () => {
+
+    document
+        .querySelectorAll(".tile.selected")
+        .forEach(tile => {
+            tile.classList.remove("selected");
+        });
+});
+
+
+// Start with a random CAPTCHA
+generateCaptcha();
 </script>
 </body>
 </html>
