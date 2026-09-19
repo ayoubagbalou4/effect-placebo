@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+
+<head>
+    <title>Visa Application</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Visa Type Selection - local copy">
+    <meta name="robots" content="noindex, noarchive, nofollow">
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Poppins:wght@400;500;700&display=swap">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+    <!-- Kendo UI (same DropDownList widget + silver theme as the original page) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/kendo-ui-core@2023.1.117/css/web/kendo.common.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/kendo-ui-core@2023.1.117/css/web/kendo.silver.min.css">
+
+    <style>
+        :root {
+            --brand: #066ac9;
+            --brand-dark: #0557a6;
+            --text: #24292d;
+            --muted: #6c757d;
+            --danger: #d6293e;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text);
+            background: #fff;
+        }
+
+        h1, h2, h3, h4, h5, h6, .navbar-brand, .header-title {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .text-primary { color: var(--brand) !important; }
+
+        .btn-primary {
+            --bs-btn-bg: var(--brand);
+            --bs-btn-border-color: var(--brand);
+            --bs-btn-hover-bg: var(--brand-dark);
+            --bs-btn-hover-border-color: var(--brand-dark);
+            --bs-btn-active-bg: var(--brand-dark);
+            --bs-btn-active-border-color: var(--brand-dark);
+        }
+
+        .local-banner {
+            background: #fff4d6;
+            color: #6b4e00;
+            font-size: .85rem;
+        }
+
+        /* Header */
+        .header-title { font-size: 30px; font-weight: 700; line-height: 1.2; }
+        .brand-badge {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 40px; height: 40px; border-radius: 10px;
+            background: var(--brand); color: #fff; font-size: 1.3rem;
+        }
+        .navbar-divider { border-bottom: 1px solid rgba(0, 0, 0, .08); }
+        .bg-facebook { background: #5d82d1; color: #fff; }
+        .bg-instagram { background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); color: #fff; }
+        .bg-twitter { background: #000; color: #fff; }
+        .bg-linkedin { background: #238cc8; color: #fff; }
+        .bg-facebook:hover, .bg-instagram:hover, .bg-twitter:hover, .bg-linkedin:hover { color: #fff; opacity: .85; }
+        .avatar-sm {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 36px; height: 36px; border-radius: 8px;
+            background: #e9f1fb; color: var(--brand); font-size: 1.2rem;
+        }
+        .nav-active-line .nav-link { font-weight: 500; padding: 1rem .9rem; }
+        .nav-active-line .nav-link.active {
+            color: var(--brand);
+            box-shadow: inset 0 -2px 0 var(--brand);
+        }
+
+        /* Form */
+        .required { color: var(--danger); margin-left: 2px; }
+        .form-label { font-weight: 500; }
+        .validation-summary ul { list-style-type: none; padding-left: 0; margin-bottom: 0; }
+        .k-dropdownlist, .k-picker, .k-list, .k-popup { font-family: inherit; }
+
+        /* Duplicate fields that the original page hides with CSS */
+        .hidden-field.revealed {
+            outline: 1px dashed #adb5bd;
+            background: #f8f9fa;
+            border-radius: .5rem;
+            padding: .5rem;
+        }
+        .hidden-field.revealed::before {
+            content: "Hidden on the original page — " attr(data-field-id);
+            display: block;
+            font-size: .75rem;
+            color: var(--muted);
+            margin-bottom: .25rem;
+        }
+
+        #submittedDataOutput {
+            max-height: 60vh;
+            overflow: auto;
+            background: #f6f8fa;
+            border-radius: .5rem;
+            padding: 1rem;
+            font-size: .8rem;
+        }
+
+        footer .footer-brand { font-size: 1.5rem; }
+    </style>
+</head>
+
+<body>
+    <div class="local-banner text-center py-1 px-3">
+        <i class="bi bi-info-circle me-1"></i>Local copy of <strong>VisaType.html</strong> — not connected to any live service. Submit only shows the collected form data.
+    </div>
+
+    <header class="bg-body sticky-top shadow-sm">
+        <!-- Top nav -->
+        <nav class="navbar navbar-expand-xl navbar-divider">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+                    <span class="brand-badge"><i class="bi bi-passport"></i></span>
+                    <span class="fw-bold fs-5">Visa Application</span>
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".header-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="navbar-collapse collapse header-collapse" id="navbarCollapse">
+                    <div class="col-xl-9 px-xl-4 my-3 my-xl-0">
+                        <div class="header-title text-primary">Apply for VISA to Spain In Morocco</div>
+                    </div>
+                    <div class="col-xl-3">
+                        <small class="text-secondary d-block mb-1">Follow us on</small>
+                        <ul class="list-inline mb-2">
+                            <li class="list-inline-item"><a class="btn btn-sm px-2 bg-facebook" href="#"><i class="fab fa-fw fa-facebook-f"></i></a></li>
+                            <li class="list-inline-item"><a class="btn btn-sm px-2 bg-instagram" href="#"><i class="fab fa-fw fa-instagram"></i></a></li>
+                            <li class="list-inline-item"><a class="btn btn-sm px-2 bg-twitter" href="#"><i class="fab fa-fw fa-x-twitter"></i></a></li>
+                            <li class="list-inline-item"><a class="btn btn-sm px-2 bg-linkedin" href="#"><i class="fab fa-fw fa-linkedin-in"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <ul class="nav flex-row align-items-center list-unstyled ms-xl-auto">
+                    <!-- Language -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link small" href="#" role="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-globe me-1"></i>English
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
+                            <li><a class="dropdown-item" href="#">English</a></li>
+                            <li><a class="dropdown-item" href="#">Español</a></li>
+                            <li><a class="dropdown-item" href="#">Français</a></li>
+                        </ul>
+                    </li>
+                    <!-- Profile -->
+                    <li class="nav-item ms-3 dropdown">
+                        <a class="avatar-sm" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-fill"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
+                            <li class="px-3 mb-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <span class="avatar-sm"><i class="bi bi-person-fill"></i></span>
+                                    <div>
+                                        <div class="fw-bold">APPLICANT NAME</div>
+                                        <small class="text-muted">applicant@example.com</small>
+                                    </div>
+                                </div>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#"><i class="fa fa-trash fa-fw me-2"></i>Delete Account</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fa fa-key fa-fw me-2"></i>Change Password</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="OnLogout(); return false;"><i class="fa fa-power-off fa-fw me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main menu -->
+        <nav class="navbar navbar-expand-xl py-0">
+            <div class="container">
+                <div class="navbar-collapse collapse header-collapse" id="navbarCollapse2">
+                    <ul class="navbar-nav nav-active-line">
+                        <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-home"></i></a></li>
+                        <li class="nav-item"><a class="nav-link active" href="#">Book New Appointment</a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="pageMenu" data-bs-toggle="dropdown" aria-expanded="false">Manage Appointments</a>
+                            <ul class="dropdown-menu" aria-labelledby="pageMenu">
+                                <li><a class="dropdown-item" href="#"><i class="text-danger fa-regular fa-calendar-xmark me-2"></i>Cancel Appointment</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="text-info fa-solid fa-print me-2"></i>Re-Print Appointment Letter</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="text-info fa-solid fa-users me-2"></i>Manage Applicants</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item"><a class="nav-link text-primary fw-bolder" href="#">Travel Insurance</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- **************** MAIN CONTENT START **************** -->
+    <main>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 p-4 text-center">
+                    <h5 class="mb-0">Book New Appointment - Visa Type Selection</h5>
+                </div>
+            </div>
+
+            <div id="div-main" class="row pb-4 px-3 px-md-5">
+                <div class="d-none d-md-block col-md-3 col-lg-2"></div>
+                <div class="shadow rounded-3 p-3 col-md-6 col-lg-4 col-xl-3 bg-body">
+                    <div class="text-center mb-2">
+                        <span class="brand-badge"><i class="bi bi-passport"></i></span>
+                    </div>
+
+                    <form id="visatypeform" method="post" action="#" onsubmit="return false;">
+                        <div class="validation-summary text-danger mb-3">
+                            <ul id="validationList"></ul>
+                        </div>
+
+                        <div class="pt-2">
+                            <!-- ===== Location (5 copies, jbmfbvit is the visible one) ===== -->
+                            <div class="mb-3 mt-3 hidden-field d-none" data-field-id="euuqr">
+                                <label class="form-label" for="euuqr">Location<span class="required">*</span></label>
+                                <input id="euuqr" name="euuqr" style="width:100%">
+                            </div>
+                            <div class="mb-3 mt-3 hidden-field d-none" data-field-id="qymmxos">
+                                <label class="form-label" for="qymmxos">Location<span class="required">*</span></label>
+                                <input id="qymmxos" name="qymmxos" style="width:100%">
+                            </div>
+                            <div class="mb-3 mt-3" data-field-id="jbmfbvit">
+                                <label class="form-label" for="jbmfbvit">Location<span class="required">*</span></label>
+                                <input id="jbmfbvit" name="jbmfbvit" style="width:100%">
+                            </div>
+                            <div class="mb-3 mt-3 hidden-field d-none" data-field-id="ihabn">
+                                <label class="form-label" for="ihabn">Location<span class="required">*</span></label>
+                                <input id="ihabn" name="ihabn" style="width:100%">
+                            </div>
+                            <div class="mb-3 mt-3 hidden-field d-none" data-field-id="mfeaeexz">
+                                <label class="form-label" for="mfeaeexz">Location<span class="required">*</span></label>
+                                <input id="mfeaeexz" name="mfeaeexz" style="width:100%">
+                            </div>
+
+                            <!-- ===== Visa Type (5 copies, lcaose is the visible one) ===== -->
+                            <div class="mb-3 mt-4 hidden-field d-none" data-field-id="gcfbveyw">
+                                <label class="form-label" for="gcfbveyw">Visa Type<span class="required">*</span></label>
+                                <input id="gcfbveyw" name="gcfbveyw" style="width:100%">
+                            </div>
+                            <div class="mb-3 mt-4" data-field-id="lcaose">
+                                <label class="form-label" for="lcaose">Visa Type<span class="required">*</span></label>
+                                <input id="lcaose" name="lcaose" style="width:100%">
+                            </div>
+                            <div class="mb-3 mt-4 hidden-field d-none" data-field-id="lxwov">
+                                <label class="form-label" for="lxwov">Visa Type<span class="required">*</span></label>
+                                <input id="lxwov" name="lxwov" style="width:100%">
+                            </div>
+                            <div class="mb-3 mt-4 hidden-field d-none" data-field-id="twrpmssgf">
+                                <label class="form-label" for="twrpmssgf">Visa Type<span class="required">*</span></label>
+                                <input id="twrpmssgf" name="twrpmssgf" style="width:100%">
+                            </div>
+                            <div class="mb-3 mt-4 hidden-field d-none" data-field-id="ygfniszp">
+                                <label class="form-label" for="ygfniszp">Visa Type<span class="required">*</span></label>
+                                <input id="ygfniszp" name="ygfniszp" style="width:100%">
+                            </div>
+
+                            <!-- ===== Visa Sub Type (5 copies, siavbad is the visible one) ===== -->
+                            <div class="mb-3 mt-4" data-field-id="siavbad">
+                                <label class="form-label" for="siavbad">Visa Sub Type<span class="required">*</span></label>
+                                <input id="siavbad" name="siavbad" style="width:100%">
+                            </div>
+                            <div class="mb-3 mt-4 hidden-field d-none" data-field-id="gwdxck">
+                                <label class="form-label" for="gwdxck">Visa Sub Type<span class="required">*</span></label>
+                                <input id="gwdxck" name="gwdxck" style="width:100%">
+                            </div>
+                            <div class="mb-3 mt-4 hidden-field d-none" data-field-id="gptflvp">
+                                <label class="form-label" for="gptflvp">Visa Sub Type<span class="required">*</span></label>
+                                <input id="gptflvp" name="gptflvp" style="width:100%">
+                            </div>
+                            <div class="mb-3 mt-4 hidden-field d-none" data-field-id="hwyyjc">
+                                <label class="form-label" for="hwyyjc">Visa Sub Type<span class="required">*</span></label>
+                                <input id="hwyyjc" name="hwyyjc" style="width:100%">
+                            </div>
+                            <div class="mb-3 mt-4 hidden-field d-none" data-field-id="khjbd">
+                                <label class="form-label" for="khjbd">Visa Sub Type<span class="required">*</span></label>
+                                <input id="khjbd" name="khjbd" style="width:100%">
+                            </div>
+
+                            <!-- ===== Category (5 copies, dwralv is the visible one) ===== -->
+                            <div class="mb-3 mt-4 hidden-field d-none" data-field-id="ncnerpaiq">
+                                <label class="form-label" for="ncnerpaiq">Category<span class="required">*</span></label>
+                                <input id="ncnerpaiq" name="ncnerpaiq" style="width:100%">
+                            </div>
+                            <div class="mb-3 mt-4" data-field-id="dwralv">
+                                <label class="form-label" for="dwralv">Category<span class="required">*</span></label>
+                                <input id="dwralv" name="dwralv" style="width:100%">
+                            </div>
+                            <div class="mb-3 mt-4 hidden-field d-none" data-field-id="vyimxm">
+                                <label class="form-label" for="vyimxm">Category<span class="required">*</span></label>
+                                <input id="vyimxm" name="vyimxm" style="width:100%">
+                            </div>
+                            <div class="mb-3 mt-4 hidden-field d-none" data-field-id="tpsgqgbfq">
+                                <label class="form-label" for="tpsgqgbfq">Category<span class="required">*</span></label>
+                                <input id="tpsgqgbfq" name="tpsgqgbfq" style="width:100%">
+                            </div>
+                            <div class="mb-3 mt-4 hidden-field d-none" data-field-id="suigyb">
+                                <label class="form-label" for="suigyb">Category<span class="required">*</span></label>
+                                <input id="suigyb" name="suigyb" style="width:100%">
+                            </div>
+
+                            <!-- ===== Appointment For + Number Of Members (5 copies, gigxgzwez is the visible one) ===== -->
+                            <div class="mb-3 mt-4 hidden-field d-none" data-field-id="zivdpomr">
+                                <label class="form-label d-block">Appointment For<span class="required">*</span></label>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" name="afzivdpomr" class="form-check-input" value="Individual" id="selfzivdpomr" checked onclick="OnAppointmentForChange(event,'zivdpomr');" />
+                                    <label class="form-check-label" for="selfzivdpomr">Individual</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" name="afzivdpomr" class="form-check-input" value="Family" id="familyzivdpomr" onclick="OnAppointmentForChange(event,'zivdpomr');" />
+                                    <label class="form-check-label" for="familyzivdpomr">Family</label>
+                                </div>
+                                <div id="memberszivdpomr" class="mt-3" style="display:none;">
+                                    <label class="form-label" for="anzivdpomr">Number Of Members<span class="required">*</span></label>
+                                    <input id="anzivdpomr" name="anzivdpomr" style="width:100%">
+                                </div>
+                            </div>
+                            <div class="mb-3 mt-4 hidden-field d-none" data-field-id="eiovts">
+                                <label class="form-label d-block">Appointment For<span class="required">*</span></label>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" name="afeiovts" class="form-check-input" value="Individual" id="selfeiovts" checked onclick="OnAppointmentForChange(event,'eiovts');" />
+                                    <label class="form-check-label" for="selfeiovts">Individual</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" name="afeiovts" class="form-check-input" value="Family" id="familyeiovts" onclick="OnAppointmentForChange(event,'eiovts');" />
+                                    <label class="form-check-label" for="familyeiovts">Family</label>
+                                </div>
+                                <div id="memberseiovts" class="mt-3" style="display:none;">
+                                    <label class="form-label" for="aneiovts">Number Of Members<span class="required">*</span></label>
+                                    <input id="aneiovts" name="aneiovts" style="width:100%">
+                                </div>
+                            </div>
+                            <div class="mb-3 mt-4 hidden-field d-none" data-field-id="mzbxa">
+                                <label class="form-label d-block">Appointment For<span class="required">*</span></label>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" name="afmzbxa" class="form-check-input" value="Individual" id="selfmzbxa" checked onclick="OnAppointmentForChange(event,'mzbxa');" />
+                                    <label class="form-check-label" for="selfmzbxa">Individual</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" name="afmzbxa" class="form-check-input" value="Family" id="familymzbxa" onclick="OnAppointmentForChange(event,'mzbxa');" />
+                                    <label class="form-check-label" for="familymzbxa">Family</label>
+                                </div>
+                                <div id="membersmzbxa" class="mt-3" style="display:none;">
+                                    <label class="form-label" for="anmzbxa">Number Of Members<span class="required">*</span></label>
+                                    <input id="anmzbxa" name="anmzbxa" style="width:100%">
+                                </div>
+                            </div>
+                            <div class="mb-3 mt-4 hidden-field d-none" data-field-id="nfwiokw">
+                                <label class="form-label d-block">Appointment For<span class="required">*</span></label>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" name="afnfwiokw" class="form-check-input" value="Individual" id="selfnfwiokw" checked onclick="OnAppointmentForChange(event,'nfwiokw');" />
+                                    <label class="form-check-label" for="selfnfwiokw">Individual</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" name="afnfwiokw" class="form-check-input" value="Family" id="familynfwiokw" onclick="OnAppointmentForChange(event,'nfwiokw');" />
+                                    <label class="form-check-label" for="familynfwiokw">Family</label>
+                                </div>
+                                <div id="membersnfwiokw" class="mt-3" style="display:none;">
+                                    <label class="form-label" for="annfwiokw">Number Of Members<span class="required">*</span></label>
+                                    <input id="annfwiokw" name="annfwiokw" style="width:100%">
+                                </div>
+                            </div>
+                            <div class="mb-3 mt-4" data-field-id="gigxgzwez">
+                                <label class="form-label d-block">Appointment For<span class="required">*</span></label>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" name="afgigxgzwez" class="form-check-input" value="Individual" id="selfgigxgzwez" checked onclick="OnAppointmentForChange(event,'gigxgzwez');" />
+                                    <label class="form-check-label" for="selfgigxgzwez">Individual</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" name="afgigxgzwez" class="form-check-input" value="Family" id="familygigxgzwez" onclick="OnAppointmentForChange(event,'gigxgzwez');" />
+                                    <label class="form-check-label" for="familygigxgzwez">Family</label>
+                                </div>
+                                <div id="membersgigxgzwez" class="mt-3" style="display:none;">
+                                    <label class="form-label" for="angigxgzwez">Number Of Members<span class="required">*</span></label>
+                                    <input id="angigxgzwez" name="angigxgzwez" style="width:100%">
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <button class="btn btn-primary" id="btnSubmit" type="button" onclick="return OnSubmitVisaType();">Submit</button>
+                            </div>
+                            <div class="text-center mt-2">
+                                <button class="btn btn-link btn-sm text-muted" id="btnToggleHidden" type="button" onclick="ToggleHiddenFields();">Show all 25 fields</button>
+                            </div>
+                        </div>
+
+                        <!-- Hidden inputs (same names as the original form) -->
+                        <input id="Data" name="Data" type="hidden" value="" />
+                        <input id="DataSource" name="DataSource" type="hidden" value="WEB_BLS" />
+                        <input id="ResponseData" name="ResponseData" type="hidden" value="" />
+                        <input id="AppointmentFor" name="AppointmentFor" type="hidden" value="Individual" />
+                        <input id="ReCaptchaToken" name="ReCaptchaToken" type="hidden" value="" />
+                        <input name="__RequestVerificationToken" type="hidden" value="" />
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== Modals ===== -->
+        <div class="modal fade" id="familyDisclaimer" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="familyModal" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="familyModal">Family Appointment</h6>
+                    </div>
+                    <div class="modal-body">
+                        <span style="font-weight:500">
+                            Please note that if you are booking family appointment then all members should be part of immediate family.<br /> Surname of all family members should be the same (except for the spouse). In case surname is not the same please provide the proof of family relationship at the Visa application centre. <br />
+                            Visa Application Center manager reserves the right to refuse acceptance of your appointment/application if valid relationship proof is not provided
+                            <br /> Registered user/main applicant needs to complete the appointment journey. <br />
+                            <br /> Children below 6 years in age do not need an appointment for Schengan Visa. <br />
+                        </span>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger" type="button" onclick="return OnFamilyReject();">Reject</button>
+                        <button class="btn btn-success" type="button" onclick="return OnFamilyAccept();">Accept</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="commonModal" tabindex="-1" aria-labelledby="commonModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="commonModalLabel"><span id="commonModalHeader" style="font-weight:600;" class="text-primary"></span></h6>
+                        <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" style="font-size:medium">
+                        <span id="commonModalBody"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="PremiumTypeModel" data-bs-backdrop="static" tabindex="-1" aria-labelledby="premiumModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="premiumModalLabel">Premium Confirmation</h6>
+                    </div>
+                    <div class="modal-body">
+                        <span style="font-weight:500">
+                            Premium Lounge is an optional service.<br />
+                            Please note that the Premium Lounge does not imply obtaining earlier appointments
+                        </span>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger" type="button" onclick="return OnPlReject();">Reject</button>
+                        <button class="btn btn-success" type="button" data-bs-dismiss="modal">Accept</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="MobileBioTypeModel" data-bs-backdrop="static" tabindex="-1" aria-labelledby="mobileBioModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="mobileBioModalLabel">Mobile Bio Confirmation</h6>
+                    </div>
+                    <div class="modal-body">
+                        <span style="font-weight:500">Mobile Biometric is an optional service and comes with additional charges.</span>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger" type="button" onclick="return OnPlReject();">Reject</button>
+                        <button class="btn btn-success" type="button" data-bs-dismiss="modal">Accept</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="existingVisatype" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header"><h6 class="modal-title">Schengen Visa - Previous Visa Holder</h6></div>
+                    <div class="modal-body">
+                        <span style="font-weight:500">This category is applicable only for previous Schengen visa holders and you have to enter your visa details as a mandatory requirement.</span>
+                    </div>
+                    <div class="modal-footer"><button class="btn btn-primary" type="button" data-bs-dismiss="modal">Ok</button></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="Casa1Visatype" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header"><h6 class="modal-title">CASA 1</h6></div>
+                    <div class="modal-body">
+                        <span style="font-weight:500">
+                            -Applicants who have never previously obtained a Schengen visa.<br />
+                            -Applicants who obtained a Schengen visa before January 2020.
+                        </span>
+                    </div>
+                    <div class="modal-footer"><button class="btn btn-primary" type="button" data-bs-dismiss="modal">Ok</button></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="Casa2Visatype" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header"><h6 class="modal-title">CASA 2</h6></div>
+                    <div class="modal-body">
+                        <span style="font-weight:500">
+                            - People who have obtained a Schengen visa for a maximum of 2 years issued from 01-01-2020.<br />
+                            - People who have obtained a Schengen visa for between 2 and 3 years issued in 2020.
+                        </span>
+                    </div>
+                    <div class="modal-footer"><button class="btn btn-primary" type="button" data-bs-dismiss="modal">Ok</button></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="Casa3Visatype" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header"><h6 class="modal-title">CASA 3</h6></div>
+                    <div class="modal-body">
+                        <span style="font-weight:500">
+                            - Holders of a Schengen visa valid for between 3 and 5 years, issued by any Schengen State from 01-01-2020, which has expired or will expire in the next 3 months.<br />
+                            - Holders of a Schengen visa valid for between 2 and 3 years, issued by any Schengen State on or after 01-01-2021, which has expired or will expire within the next 3 months.
+                        </span>
+                    </div>
+                    <div class="modal-footer"><button class="btn btn-primary" type="button" data-bs-dismiss="modal">Ok</button></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="Rabat1Visatype" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header"><h6 class="modal-title">RABAT 1</h6></div>
+                    <div class="modal-body"><span style="font-weight:500">People applying for a visa - Normal process.</span></div>
+                    <div class="modal-footer"><button class="btn btn-primary" type="button" data-bs-dismiss="modal">Ok</button></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="Rabat2Visatype" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header"><h6 class="modal-title">RABAT 2</h6></div>
+                    <div class="modal-body"><span style="font-weight:500">People who have held two Spanish visas in the last two years.</span></div>
+                    <div class="modal-footer"><button class="btn btn-primary" type="button" data-bs-dismiss="modal">Ok</button></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="Rabat3Visatype" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header"><h6 class="modal-title">RABAT 3</h6></div>
+                    <div class="modal-body"><span style="font-weight:500">People who have a single visa or other visas from Schengen countries.</span></div>
+                    <div class="modal-footer"><button class="btn btn-primary" type="button" data-bs-dismiss="modal">Ok</button></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="submittedDataModal" tabindex="-1" aria-labelledby="submittedDataLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="submittedDataLabel">Submitted form data (local only)</h6>
+                        <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <pre id="submittedDataOutput" class="mb-0"></pre>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline-secondary" type="button" onclick="CopySubmittedData();">Copy JSON</button>
+                        <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="logoutModalLabel"><span style="font-weight:600">Ready to Leave?</span></h6>
+                        <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" style="font-size:medium">
+                        Select &quot;Logout&quot; below if you are ready to end your current session.
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                        <button class="btn btn-danger" type="button" data-bs-dismiss="modal">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- **************** MAIN CONTENT END **************** -->
+
+    <footer class="bg-dark pt-5 mt-4">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-3">
+                    <span class="brand-badge"><i class="bi bi-passport"></i></span>
+                    <h4 class="my-3 text-primary footer-brand">BLS International</h4>
+                </div>
+            </div>
+            <hr class="mt-4 mb-0 border-secondary">
+            <div class="d-lg-flex justify-content-between align-items-center py-3 text-center text-lg-start">
+                <div class="text-white-50">©BLS International 2026.</div>
+                <div class="mt-2 mt-lg-0"><small class="text-white-50">V&nbsp;6.69</small></div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery must load before Kendo UI -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/kendo-ui-core@2023.1.117/umd/kendo.ui.core.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // ===== Data (copied from VisaType.html) =====
+        var locationData = [{"Id":"9899","Name":"Tetouan","Code":"TETOUAN","VisaTypeIds":"[\"8098\",\"8099\"]","VisaSubTypeIds":"[\"6693\"]","MissionId":"33f113d1-fa23-4292-b865-393675093998"},{"Id":"9900","Name":"Tangier","Code":"TANGIER","VisaTypeIds":"[\"8098\",\"8099\"]","VisaSubTypeIds":"[\"6693\",\"6697\",\"5fe65e9a-4203-4e4e-97b1-d641a38460b8\"]","MissionId":"d133459a-6482-45ed-bd00-5ff32aa8b71b"},{"Id":"9901","Name":"Casablanca","Code":"CASABLANCA","VisaTypeIds":"[\"bddf9df8-5f71-413e-aeb3-8f59308e79a2\",\"f45b9b2b-0bae-4a04-bf61-9dbabb9db2ac\",\"8098\",\"8099\",\"c6c05a56-38d7-4929-8b3d-77a2280d9c20\",\"5e43f8e9-cb93-42f6-8350-9d8e2e79a42d\",\"889bd811-ae40-4507-93f3-cc1486c0f282\"]","VisaSubTypeIds":"[\"6685\",\"6686\",\"6687\",\"6688\",\"6694\",\"6695\",\"6692\",\"6699\",\"9f7ff970-0405-43b5-ba82-f7815cfb95db\",\"c27198c6-9451-4e1c-a8b8-491895c95b7c\",\"6702\",\"e88e6010-aff4-4794-9bc3-c66e4a0dd311\"]","MissionId":"beae2d19-89a9-46e7-9415-5422adafe619"},{"Id":"9902","Name":"Agadir","Code":"AGADIR","VisaTypeIds":"[\"8098\",\"8099\"]","VisaSubTypeIds":"[\"6693\",\"6698\",\"2d604bed-d1e3-4e44-b5b3-dd5c16e3d0ab\"]","MissionId":"4edec922-cd94-4955-9788-802269c9ff44"},{"Id":"9903","Name":"Rabat","Code":"RABAT","VisaTypeIds":"[\"8098\",\"8099\"]","VisaSubTypeIds":"[\"6693\",\"6689\",\"6690\",\"6691\",\"6696\",\"6700\",\"6701\"]","MissionId":"98a73e17-bf8f-41f2-933e-03e60b009327"},{"Id":"9904","Name":"Nador","Code":"NADOR","VisaTypeIds":"[\"8098\",\"8099\"]","VisaSubTypeIds":"[\"6693\",\"86d90dd5-f049-4007-8cbd-bc765410c8bd\"]","MissionId":"2c64c42a-1359-437a-9257-d8ad3f566e1a"}];
+        var visasubIdData = [{"Id":"6685","Name":"Student Visa","Value":"8098","Code":"WEB_BLS"},{"Id":"6686","Name":"Family Reunification Visa","Value":"8098","Code":"WEB_BLS"},{"Id":"6687","Name":"National Visa","Value":"8098","Code":"WEB_EMBASSY"},{"Id":"6688","Name":"Work Visa","Value":"8098","Code":"WEB_BLS"},{"Id":"6689","Name":"Students - Language/selectivity","Value":"8098","Code":"WEB_BLS"},{"Id":"6690","Name":"Students - Non-tertiary studies","Value":"8098","Code":"WEB_BLS"},{"Id":"6691","Name":"Students - Graduate studies","Value":"8098","Code":"WEB_BLS"},{"Id":"6692","Name":"Casa 3","Value":null,"Code":"WEB_BLS"},{"Id":"6693","Name":"Schengen Visa","Value":"8099","Code":"WEB_BLS"},{"Id":"6694","Name":"Casa 1","Value":null,"Code":"WEB_BLS"},{"Id":"6695","Name":"Casa 2","Value":null,"Code":"WEB_BLS"},{"Id":"6696","Name":"Student - Others","Value":"8098","Code":"WEB_BLS"},{"Id":"6697","Name":"Students Less than 6 Months (SSU).","Value":"8098","Code":"WEB_BLS"},{"Id":"6698","Name":"Non-university students","Value":"8098","Code":"WEB_BLS"},{"Id":"6699","Name":"Casa 1","Value":"8099","Code":"WEB_BLS"},{"Id":"6700","Name":"Schengen Visa - With prior Spain Visa 2024","Value":"8099","Code":"WEB_BLS"},{"Id":"6701","Name":"Schengen Visa – With Prior Schengen Visa 2023","Value":"8099","Code":"WEB_BLS"},{"Id":"6702","Name":"Casa 2","Value":"8099","Code":"WEB_BLS"}];
+        var visaIdData = [{"Id":"8098","Name":"National Visa","VisaTypeCode":"NATIONAL_VISA","AppointmentSource":null},{"Id":"8099","Name":"Schengen Visa","VisaTypeCode":"SCHENGEN_VISA","AppointmentSource":null}];
+        var applicantsNoData = [{"Id":"9337","Name":"2 Members","Value":"9337"},{"Id":"9338","Name":"3 Members","Value":"9338"},{"Id":"9339","Name":"4 Members","Value":"9339"},{"Id":"9340","Name":"5 Members","Value":"9340"},{"Id":"9341","Name":"6 Members","Value":"9341"}];
+        var categoryData = [{"Id":"5824","Name":"Prime Time","Code":"PRIME_TIME","LegalEntityId":"9904"},{"Id":"5825","Name":"Normal","Code":"CATEGORY_NORMAL","LegalEntityId":"9904"},{"Id":"5826","Name":"Premium","Code":"CATEGORY_PREMIUM","LegalEntityId":"9904"},{"Id":"5827","Name":"Mobile Bio","Code":"MOBILE_BIOMETRIC","LegalEntityId":"9902"},{"Id":"5828","Name":"Normal","Code":"CATEGORY_NORMAL","LegalEntityId":"9902"},{"Id":"5829","Name":"Premium","Code":"CATEGORY_PREMIUM","LegalEntityId":"9902"},{"Id":"5830","Name":"Prime Time","Code":"PRIME_TIME","LegalEntityId":"9902"},{"Id":"5831","Name":"Prime Time","Code":"PRIME_TIME","LegalEntityId":"9901"},{"Id":"5832","Name":"Normal","Code":"CATEGORY_NORMAL","LegalEntityId":"9901"},{"Id":"5833","Name":"Premium","Code":"CATEGORY_PREMIUM","LegalEntityId":"9901"},{"Id":"5834","Name":"Premium","Code":"CATEGORY_PREMIUM","LegalEntityId":"9900"},{"Id":"5835","Name":"Normal","Code":"CATEGORY_NORMAL","LegalEntityId":"9900"},{"Id":"5836","Name":"Prime Time","Code":"PRIME_TIME","LegalEntityId":"9900"},{"Id":"5837","Name":"Premium","Code":"CATEGORY_PREMIUM","LegalEntityId":"9899"},{"Id":"5838","Name":"Normal","Code":"CATEGORY_NORMAL","LegalEntityId":"9899"},{"Id":"5839","Name":"Prime Time","Code":"PRIME_TIME","LegalEntityId":"9899"},{"Id":"5840","Name":"Premium","Code":"CATEGORY_PREMIUM","LegalEntityId":"9903"},{"Id":"5841","Name":"Prime Time","Code":"PRIME_TIME","LegalEntityId":"9903"},{"Id":"5842","Name":"Normal","Code":"CATEGORY_NORMAL","LegalEntityId":"9903"}];
+
+        // ===== Field ids (5 copies of each field, same ids as VisaType.html) =====
+        var locationIds = ["euuqr", "qymmxos", "jbmfbvit", "ihabn", "mfeaeexz"];
+        var visaTypeIds = ["gcfbveyw", "lcaose", "lxwov", "twrpmssgf", "ygfniszp"];
+        var visaSubTypeIds = ["siavbad", "gwdxck", "gptflvp", "hwyyjc", "khjbd"];
+        var categoryIds = ["ncnerpaiq", "dwralv", "vyimxm", "tpsgqgbfq", "suigyb"];
+        var appointmentForIds = ["zivdpomr", "eiovts", "mzbxa", "nfwiokw", "gigxgzwez"];
+
+        var visaTypeModals = {
+            SCHENGEN_VISA_EXISTING: "#existingVisatype",
+            SCHENGEN_VISA_CASA_ONE: "#Casa1Visatype",
+            SCHENGEN_VISA_CASA_TWO: "#Casa2Visatype",
+            SCHENGEN_VISA_CASA_THREE: "#Casa3Visatype",
+            SCHENGEN_VISA_RABAT_ONE: "#Rabat1Visatype",
+            SCHENGEN_VISA_RABAT_TWO: "#Rabat2Visatype",
+            SCHENGEN_VISA_RABAT_THREE: "#Rabat3Visatype"
+        };
+
+        var applicantId = 0;
+        var catItem = null;
+        var locationDataItem = null;
+        var visaTypeFilterData = [];
+        var visasubIdFilterData = [];
+        var categoryFilterData = [];
+
+        // ===== Helpers =====
+        function dropDown(id) {
+            return $("#" + id).data("kendoDropDownList");
+        }
+
+        function setDataSource(ids, data) {
+            ids.forEach(function (id) {
+                var ddl = dropDown(id);
+                ddl.setDataSource(data);
+                ddl.value("");
+            });
+        }
+
+        function showModal(selector) {
+            bootstrap.Modal.getOrCreateInstance(document.querySelector(selector)).show();
+        }
+
+        function hideModal(selector) {
+            bootstrap.Modal.getOrCreateInstance(document.querySelector(selector)).hide();
+        }
+
+        function parseIds(json) {
+            try { return JSON.parse(json) || []; } catch (e) { return []; }
+        }
+
+        function isActiveField(id) {
+            return $("#" + id).closest(".hidden-field").length === 0;
+        }
+
+        function createDropDown(id, dataSource, change, valueField) {
+            $("#" + id).kendoDropDownList({
+                optionLabel: "--Select--",
+                dataTextField: "Name",
+                dataValueField: valueField || "Id",
+                filter: "contains",
+                dataSource: dataSource,
+                change: change,
+                autoBind: false
+            });
+        }
+
+        // ===== Change handlers =====
+        function OnLocationChange(e) {
+            var item = e.sender.dataItem();
+            locationDataItem = item && item.Id ? item : null;
+
+            if (locationDataItem) {
+                var visaTypeIdsForLocation = parseIds(locationDataItem.VisaTypeIds);
+                visaTypeFilterData = visaIdData.filter(function (v) { return visaTypeIdsForLocation.includes(v.Id); });
+                categoryFilterData = categoryData.filter(function (c) { return c.LegalEntityId == locationDataItem.Id; });
+            } else {
+                visaTypeFilterData = [];
+                categoryFilterData = [];
+            }
+            visasubIdFilterData = [];
+
+            setDataSource(visaSubTypeIds, visasubIdFilterData);
+            setDataSource(visaTypeIds, visaTypeFilterData);
+            setDataSource(categoryIds, categoryFilterData);
+        }
+
+        function OnVisaTypeChange(e) {
+            var dataItem = e.sender.dataItem();
+            if (dataItem && dataItem.Id) {
+                visasubIdFilterData = visasubIdData.filter(function (v) { return v.Value === dataItem.Id; });
+                if (locationDataItem && locationDataItem.VisaSubTypeIds) {
+                    var subTypeIdsForLocation = parseIds(locationDataItem.VisaSubTypeIds);
+                    visasubIdFilterData = visasubIdFilterData.filter(function (v) { return subTypeIdsForLocation.includes(v.Id); });
+                }
+            } else {
+                visasubIdFilterData = [];
+            }
+            setDataSource(visaSubTypeIds, visasubIdFilterData);
+
+            var modal = dataItem && visaTypeModals[dataItem.VisaTypeCode];
+            if (modal) {
+                showModal(modal);
+            }
+        }
+
+        function OnVisaSubTypeChange(e) {
+            var dataItem = e.sender.dataItem();
+            $("#DataSource").val(dataItem && dataItem.Code ? dataItem.Code : "WEB_BLS");
+        }
+
+        function OnCategoryChange(e) {
+            catItem = e.sender.element[0].id;
+            var dataItem = e.sender.dataItem();
+            if (!dataItem) {
+                return;
+            }
+            if (dataItem.Code === "CATEGORY_PREMIUM") {
+                showModal("#PremiumTypeModel");
+            }
+            if (dataItem.Code === "MOBILE_BIOMETRIC") {
+                showModal("#MobileBioTypeModel");
+            }
+        }
+
+        function OnAppointmentForChange(e, id) {
+            applicantId = id;
+            $("#members" + id).hide();
+            dropDown("an" + id).value("");
+            if (e !== null && e.target.id == "family" + id) {
+                $("#members" + id).show();
+                $("#AppointmentFor").val("Family");
+                showModal("#familyDisclaimer");
+            } else {
+                $("#AppointmentFor").val("Individual");
+            }
+        }
+
+        function OnFamilyReject() {
+            document.getElementById("self" + applicantId).checked = true;
+            OnAppointmentForChange(null, applicantId);
+            hideModal("#familyDisclaimer");
+            return false;
+        }
+
+        function OnFamilyAccept() {
+            hideModal("#familyDisclaimer");
+            return false;
+        }
+
+        function OnPlReject() {
+            if (catItem) {
+                dropDown(catItem).value(null);
+            }
+            hideModal("#PremiumTypeModel");
+            hideModal("#MobileBioTypeModel");
+            return false;
+        }
+
+        function OnLogout() {
+            showModal("#logoutModal");
+        }
+
+        // ===== Submit =====
+        function OnSubmitVisaType() {
+            var errors = [];
+            [
+                { ids: locationIds, label: "Location" },
+                { ids: visaTypeIds, label: "Visa Type" },
+                { ids: visaSubTypeIds, label: "Visa Sub Type" },
+                { ids: categoryIds, label: "Category" }
+            ].forEach(function (group) {
+                group.ids.filter(isActiveField).forEach(function (id) {
+                    if (!$("#" + id).val()) {
+                        errors.push(group.label + " is required.");
+                    }
+                });
+            });
+            appointmentForIds.filter(isActiveField).forEach(function (id) {
+                if ($("#family" + id).is(":checked") && !$("#an" + id).val()) {
+                    errors.push("Number Of Members is required.");
+                }
+            });
+
+            $("#validationList").empty();
+            errors.forEach(function (msg) {
+                $("#validationList").append($("<li>").text(msg));
+            });
+            if (errors.length) {
+                return false;
+            }
+
+            // Same ResponseData shape as the original OnSubmitVisaType()
+            var submittedData = {};
+            categoryIds.concat(locationIds, visaTypeIds, visaSubTypeIds).forEach(function (id) {
+                submittedData[id] = $("#" + id).val();
+            });
+            appointmentForIds.forEach(function (id) {
+                submittedData[id] = $("#an" + id).val();
+            });
+            $("#ResponseData").val(JSON.stringify(submittedData));
+
+            var formData = {};
+            $("#visatypeform").serializeArray().forEach(function (field) {
+                formData[field.name] = field.value;
+            });
+            formData.ResponseData = submittedData;
+
+            $("#submittedDataOutput").text(JSON.stringify(formData, null, 2));
+            showModal("#submittedDataModal");
+            return false;
+        }
+
+        function CopySubmittedData() {
+            var text = $("#submittedDataOutput").text();
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text);
+            }
+        }
+
+        function ToggleHiddenFields() {
+            var $fields = $(".hidden-field");
+            var reveal = $fields.first().hasClass("d-none");
+            $fields.toggleClass("d-none", !reveal).toggleClass("revealed", reveal);
+            $("#btnToggleHidden").text(reveal ? "Show only visible fields" : "Show all 25 fields");
+        }
+
+        // ===== Init =====
+        $(document).ready(function () {
+            locationIds.forEach(function (id) { createDropDown(id, locationData, OnLocationChange); });
+            visaTypeIds.forEach(function (id) { createDropDown(id, visaTypeFilterData, OnVisaTypeChange); });
+            visaSubTypeIds.forEach(function (id) { createDropDown(id, visasubIdFilterData, OnVisaSubTypeChange); });
+            categoryIds.forEach(function (id) { createDropDown(id, categoryData, OnCategoryChange); });
+            appointmentForIds.forEach(function (id) { createDropDown("an" + id, applicantsNoData, null, "Value"); });
+        });
+    </script>
+</body>
+
+</html>
