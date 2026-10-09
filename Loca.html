@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+  <title>Share Your Location</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #f1f5f9;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 18px;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 10px 35px #00000012;
+    }
+
+    h1 { font-size: 24px; color: #0f172a; }
+
+    p {
+      color: #64748b;
+      line-height: 1.6;
+    }
+
+    button, .map-link {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border: 0;
+      border-radius: 10px;
+      background: #2563eb;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      text-decoration: none;
+      margin-top: 16px;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
+    .result {
+      display: none;
+      margin-top: 20px;
+      padding: 15px;
+      background: #f8fafc;
+      border-radius: 10px;
+      overflow-wrap: anywhere;
+    }
+
+    #status { font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>📍 Share Your Location</h1>
+
+    <p>
+      Tap the button below to choose whether to
+      share your current location. Your browser
+      will ask for permission first.
+    </p>
+
+    <button id="locationBtn" onclick="getLocation()">
+      Share My Location
+    </button>
+
+    <p id="status"></p>
+
+    <div class="result" id="result">
+      <h3>Your Location</h3>
+      <p id="latitude"></p>
+      <p id="longitude"></p>
+      <p id="accuracy"></p>
+
+      <a id="mapLink" class="map-link"
+         target="_blank" rel="noopener noreferrer">
+        Open Google Maps
+      </a>
+
+      <button onclick="shareLocation()">
+        Send Location via WhatsApp
+      </button>
+    </div>
+  </div>
+
+  <script>
+    let mapsUrl = "";
+
+    function getLocation() {
+      const status = document.getElementById("status");
+      const button = document.getElementById("locationBtn");
+
+      if (!navigator.geolocation) {
+        status.textContent =
+          "Geolocation is not supported by this browser.";
+        return;
+      }
+
+      button.disabled = true;
+      status.textContent = "Requesting location permission...";
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          const accuracy = position.coords.accuracy;
+
+          mapsUrl =
+            "https://www.google.com/maps?q=" +
+            encodeURIComponent(lat + "," + lng);
+
+          document.getElementById("latitude")
+            .textContent = "Latitude: " + lat;
+
+          document.getElementById("longitude")
+            .textContent = "Longitude: " + lng;
+
+          document.getElementById("accuracy")
+            .textContent =
+              "Accuracy: approximately " +
+              Math.round(accuracy) + " meters";
+
+          document.getElementById("mapLink").href = mapsUrl;
+          document.getElementById("result")
+            .style.display = "block";
+
+          status.textContent = "Location obtained successfully.";
+          button.disabled = false;
+        },
+        (error) => {
+          const messages = {
+            1: "Location permission was denied.",
+            2: "Location is unavailable.",
+            3: "Location request timed out."
+          };
+
+          status.textContent =
+            messages[error.code] || "Unable to get location.";
+
+          button.disabled = false;
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 0
+        }
+      );
+    }
+
+    function shareLocation() {
+      if (!mapsUrl) return;
+
+      const message = "My location: " + mapsUrl;
+
+      window.open(
+        "https://wa.me/?text=" +
+          encodeURIComponent(message),
+        "_blank",
+        "noopener,noreferrer"
+      );
+    }
+  </script>
+</body>
+</html>
